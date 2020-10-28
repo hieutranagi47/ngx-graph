@@ -45,6 +45,7 @@ import { id } from '../utils/id';
 import { PanningAxis } from '../enums/panning.enum';
 import { MiniMapPosition } from '../enums/mini-map-position.enum';
 import { throttleable } from '../utils/throttle';
+import { D3ForceDirectedLayout } from './layouts/customLayouts';
 
 /**
  * Matrix
@@ -793,8 +794,15 @@ export class GraphComponent extends BaseChartComponent implements OnInit, OnChan
       return;
     }
 
-    const panX = -this.panOffsetX - x * this.zoomLevel + this.dims.width / 2;
-    const panY = -this.panOffsetY - y * this.zoomLevel + this.dims.height / 2;
+    let panX = 0;
+    let panY = 0;
+    if (this.layout instanceof D3ForceDirectedLayout) {
+      panX = -this.panOffsetX + this.dims.width / 2;
+      panY = -this.panOffsetY + this.dims.height / 2;
+    } else {
+      panX = -this.panOffsetX - x * this.zoomLevel + this.dims.width / 2;
+      panY = -this.panOffsetY - y * this.zoomLevel + this.dims.height / 2;
+    }
 
     this.transformationMatrix = transform(
       this.transformationMatrix,
